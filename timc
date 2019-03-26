@@ -1,0 +1,421 @@
+import math
+import pandas as pd
+import numpy as np
+import scipy.stats as st
+import pylab
+import matplotlib.pyplot as plt
+from  matplotlib import mlab
+import random
+import statistics
+
+def mode(freq_table):
+    max = 0.0
+
+    result = dict()
+
+    for key in freq_table.keys():
+        if freq_table[key] > max:
+            max = float(freq_table[key])
+
+    for key in freq_table:
+        if freq_table[key] == max:
+            result[key] = float(freq_table[key])
+
+    return result
+
+def dev(freq_table):
+    res = 0
+    avg = 0
+    length = 0
+
+    for x in freq_table:
+        avg += (x * freq_table[x])
+        length += freq_table[x] 
+
+    avg /= length
+
+    for x in freq_table:
+        res +=  freq_table[x] * (x - avg)**(2)
+    return res
+
+def stdev(nums):
+    diffs = 0
+    avg = sum(nums)/len(nums)
+    for n in nums:
+        diffs += (n - avg)**(2)
+    return (diffs/(len(nums)-1))**(0.5)
+
+def r(sample):
+    res = 0
+    n = len(sample)
+
+    while not (n > math.pow(2,res) and n <= math.pow(2, res+1)):
+        res += 1
+
+    return res
+
+def centr_mean(centr_freq):
+    res = 0
+    for key in centr_freq:
+        res += float(key) * centr_freq[key]
+
+    return res / sum(centr_freq.values())
+
+def discrete():
+    n = int(input("Кiлькiсть елементiв: "))
+    lower_bound = int(input("Нижня межа значень вибiрки: "))
+    upper_bound = int(input("Верхня межа значень вибiрки: "))
+
+    sample = list()
+
+    for i in range(n):
+        num = random.randint(lower_bound, upper_bound)
+        
+        sample.append(num)
+
+    #sample = [20,20,20,25,25,25,25,25,30,30,30,30,35,35,35,35,35,40,40,40,45,45,45,45,45]
+    print("\nВибірка:")
+    print(sample)
+    
+    var = list(sample)
+    var.sort()
+    x = list(set(sample))
+    y = list()
+    x.sort()
+
+    print("\nВаріаційний ряд:")
+    print(var)
+
+    freq_table = dict()
+
+    for num in x:
+        freq_table[num] = sample.count(num)
+
+    print("\nЧастотна таблиця:")
+
+    for key in freq_table:
+        print("x[i] = " + str(key) + "\tn[i] = " + str(freq_table[key]))
+        y.append(freq_table[key])
+
+    pylab.plot(x, y, label = "Частотний полігон")
+    pylab.show()
+    pylab.scatter(x, y, label = "Частотний графік")
+    pylab.show()
+    pylab.vlines(x, 0, y, linestyle = "dashed")
+    pylab.scatter(x, y, zorder = 2, label = "Частотна діаграма")
+    pylab.show()
+    
+    print('\nЧислові характеристики:')
+
+    print("\nСереднє значення: " + str(np.mean(sample)))
+    print("\nМода: ")
+    print(list(mode(freq_table).keys()))
+
+    print("\nМедiана: " + str(statistics.median(sample)))
+
+    ro = max(sample) - min(sample)
+    print("\nРозмах: " + str(ro))
+    
+    print("\nДевiацiя: " + str(dev(freq_table)))
+
+    variansa = dev(freq_table) / (len(sample)-1)
+    print("\nВарiанса: " + str(variansa))
+
+    standart = math.sqrt(variansa)
+    print("\nСтандарт: " + str(standart))
+
+    variation = standart / np.mean(sample)
+    print("\nВаріація: " + str(variation))
+
+    print("\nАсиметрія: " + str(st.skew(sample)))
+    
+    print("\nЕксцес: " + str(st.kurtosis(sample)))
+
+    qr = list()
+
+    if len(var) % 4 == 0:
+        for i in range(int(len(var)/4)-1, (len(var)-int(len(var)/4)), int(len(var)/4)):
+            qr.append(var[i])
+
+        print("\nКвартилі: " + str(qr))
+        print('\nІнтерквартильна широта: ' + str(qr[-1] - qr[0]))
+
+    dec = list()
+
+    if len(var) % 10 == 0:
+        for i in range(int(len(var)/10)-1, (len(var)-int(len(var)/10)), int(len(var)/10)):
+            dec.append(var[i])
+
+        print("\nДецилі: " + str(dec))
+        print('\nІнтердецильна широта: ' + str(dec[-1] - dec[0]))
+
+    prob = list()
+    a = list(set(sample))
+    for key in freq_table:
+        prob.append(freq_table[key] / len(sample))
+
+    #print(prob)
+
+    #plt.plot(np.sort(sample), np.linspace(0, 1, len(sample), endpoint=False))
+    #x = np.sort(sample)
+    #plt.plot(x, np.arange(len(x)) / float(len(x)))
+    #plt.show()
+    for key in freq_table:
+        freq_table[key] /= len(sample)
+        freq_table[key] = round(freq_table[key], 2)
+
+    prob_table = dict(freq_table)
+    for k in freq_table.keys():
+        prob_table[ke
+y] = freq_table[key]
+
+    print('\nТаблиця відносних частот:')
+    for key in prob_table:
+        print(str(key) + ' - ' + str(prob_table[key]))
+
+    print('\nЕмпірична функція розподілу:\n')
+    print('0, \tx < ' + str(list(freq_table.keys())[0]))
+    p = 0
+    for i in range(len(prob_table.keys())-1):
+        p += list(prob_table.values())[i]
+        print(str(round(p, 2)) + ', \t' + str(list(prob_table.keys())[i]) + ' <= x < ' + str(list(prob_table.keys())[i+1]))
+    print('1, \tx >= ' + str(list(freq_table.keys())[-1]))
+
+    xstart = 0
+    ystart = 0
+    for pos_x,pos_y in freq_table.items():
+        plt.hlines(xmin=xstart, xmax = pos_x, y = ystart, color ='b')
+        plt.vlines(xstart, ymin=0, ymax=ystart, linestyle='--')
+        #plt.vlines(pos_x, ymin=0, ymax=ystart, linestyle='--')
+        xstart = pos_x
+        ystart += pos_y
+
+    plt.vlines(xstart, ymin=0, ymax=ystart, linestyle='--')
+    plt.hlines(xmin=xstart, xmax = 50, y = ystart, color ='b')
+    plt.xlim(xmin = min(sample)-1)
+    plt.xlim(xmax = max(sample)+1)
+    plt.show()
+
+def continuous():
+ 
+    n = int(input("Кiлькiсть елементiв: "))
+    lower_bound = int(input("Нижня межа значень вибiрки: "))
+    upper_bound = int(input("Верхня межа значень вибiрки: "))
+
+    sample = list()
+
+    for i in range(n):
+        num = round(random.uniform(lower_bound, upper_bound), 2)
+        
+        sample.append(num)
+
+    #sample = [20,20,20,25,25,25,25,25,30,30,30,30,35,35,35,35,35,40,40,40,45,45,45,45,45]
+    #sample = [2.56, 3.45,3.89,5.00,3.00,2.56,1.71,3.34,4.21,4.85]
+
+    print("\nВибірка:")
+    print(sample)
+
+    var = list(sample)
+    var.sort()
+    x = list(set(sample))
+    y = list()
+    x.sort()
+
+    print('\nВаріаційний ряд: ')
+    print(var)
+
+    freq_table = dict()
+
+    for num in x:
+        freq_table[num] = sample.count(num)
+
+    int_len = round(((max(sample) - min(sample)) / r(sample)), 2)
+
+    int_bounds = list()
+
+    next = min(sample)
+
+    for i in range(r(sample)):
+        int_bounds.append(round(next, 2))
+        next += int_len
+
+    int_bounds.append(max(sample))
+
+    #print(str(int_bounds))
+
+    freq_table = dict()
+    int_list = list()
+
+    for i in range(len(int_bounds)-1):
+        int_list.append([int_bounds[i], int_bounds[i+1]])
+
+    int_list_values = list()
+
+    for i in range(len(int_list)):
+        if i != len(int_list)-1:
+            freq_table["[" + str(int_list[i][0]) + "; " + str(int_list[i][1]) + ")"] = 0
+        else:
+            freq_table["[" + str(int_list[i][0]) + "; " + str(int_list[i][1]) + "]"] = 0
+
+    for i in range(len(sample)):
+        for j in range(len(int_list)):
+            if sample[i] >= int_list[j][0] and sample[i] < int_list[j][1] and j != len(int_list)-1:
+                freq_table["[" + str(int_list[j][0]) + "; " + str(int_list[j][1]) + ")"] += 1
+
+            elif sample[i] >= int_list[j][0] and sample[i] <= int_list[j][1] and j == len(int_list)-1:
+                    freq_table["[" + str(int_list[j][0]) + "; " + str(int_list[j][1]) + "]"] += 1
+        
+    for key in freq_table:
+        int_list_values.append(freq_table[key])
+
+    #print(freq_table)
+
+    intr = list(freq_table.keys())
+
+    data = { 'interval': intr, 'amount': int_list_values}
+    df = pd.DataFrame(data)
+    #df.columns = ['interval']
+    print('\nЧастотна таблиця (інтервальна):\n')
+    print(df)
+
+    centered_int = list()
+    for intr in int_list:
+        centered_int.append(round(((intr[0] + intr[1])/2), 2))
+
+    #print(centered_int)
+
+    data2 = { 'mid_value': centered_int, 'amount': int_list_values }
+    df2 = pd.DataFrame(data2)
+    print('\nЧастотна таблиця за середнім значенням:\n')
+    print(df2)
+
+    df.plot(x='interval', y='amount', kind='bar', rot=0, width=1)
+    plt.show()
+    df2.plot(x='mid_value', y='amount', kind='bar', rot=0, width=1)
+    plt.show()
+
+    freq_centered = dict()
+
+    for i in range(len(freq_table)):
+        freq_centered[centered_int[i]] = freq_table[list(freq_table.keys())[i]]
+
+    #print(freq_centered)
+
+    freq_table_disc = dict()
+    x = list(set(sample))
+    for num in x:
+        freq_table_disc[num] = sample
+.count(num)
+
+    '''
+    print("\nЧастотна таблиця:")
+
+    for key in freq_table_disc:
+        print(str(key) + " - " + str(freq_table_disc[key]) + " разiв")
+        y.append(freq_table_disc[key])
+    '''
+
+    centr_sample = list()
+    for key in freq_centered:
+        for i in range(freq_centered[key]):
+            centr_sample.append(key)
+
+    #print(centr_sample)
+
+    print('\nЧислові характеристики:')
+    print("\nСереднє значення: " + str(np.mean(sample)))
+    print("Середнє значення2: " + str(centr_mean(freq_centered)))
+
+    print("\nМода: ")
+    #for k in mode(freq_table_disc).keys():
+        #print(str(k))
+    print(list(mode(freq_table_disc).keys()))
+
+    print("Мода2: ")
+    #for k in mode(freq_centered).keys():
+        #print(str(k))
+    print(list(mode(freq_centered).keys()))
+
+    print("\nМедiана: " + str(statistics.median(sample)))
+    print("Медiана2: " + str(statistics.median(centr_sample)))
+
+    ro = max(sample) - min(sample)
+    ro2 = max(centr_sample) - min(centr_sample)
+    print("\nРозмах: " + str(ro))
+    print("Розмах2: " + str(ro2))
+    
+    print("\nДевiацiя: " + str(dev(freq_table_disc)))
+    print("Девiацiя2: " + str(dev(freq_centered)))
+
+    variansa = dev(freq_table_disc) / (len(sample)-1)
+    variansa2 = dev(freq_centered) / (len(centr_sample)-1)
+    print("\nВарiанса: " + str(variansa))
+    print("Варiанса2: " + str(variansa2))
+
+    standart = math.sqrt(variansa)
+    standart2 = math.sqrt(variansa2)
+    print("\nСтандарт: " + str(standart))
+    print("Стандарт2: " + str(standart2))
+
+    variation = standart / np.mean(sample)
+    variation2 = standart2 / np.mean(centr_sample)
+    print("\nВаріація: " + str(variation))
+    print("Варіація2: " + str(variation2))
+
+    print("\nАсиметрія: " + str(st.skew(sample)))
+    print("Асиметрія2: " + str(st.skew(centr_sample)))
+
+    print("\nЕксцес: " + str(st.kurtosis(sample)))
+    print("Ексцес2: " + str(st.kurtosis(centr_sample)))
+
+    var_centr = list(centr_sample)
+    var_centr.sort()
+
+    qr = list()
+    dec = list()
+
+
+    if len(var) % 4 == 0:
+        for i in range(int(len(var)/4)-1, (len(var)-int(len(var)/4)), int(len(var)/4)):
+            qr.append(var[i])
+
+    qr2 = list()
+
+    if len(var_centr) % 4 == 0:
+        for i in range(int(len(var_centr)/4)-1, (len(var_centr)-int(len(var_centr)/4)), int(len(var_centr)/4)):
+            qr2.append(var_centr[i])
+
+        print("\nКвартилі: " + str(qr))
+        print('\nІнтерквартильна широта: ' + str(qr[-1] - qr[0]))
+        print("\nКвартилі2: " + str(qr2))
+        print('\nІнтерквартильна широта2: ' + str(qr2[-1] - qr2[0]))
+
+    dec2 = list()
+
+    if len(var) % 10 == 0:
+        for i in range(int(len(var)/10)-1, (len(var)-int(len(var)/10)), int(len(var)/10)):
+            dec.append(var[i])
+
+    if len(var_centr) % 10 == 0:
+        for i in range(int(len(var_centr)/10)-1, (len(var_centr)-int(len(var_centr)/10)), int(len(var_centr)/10)):
+            dec2.append(var_centr[i])
+
+        print("\nДецилі: " + str(dec))
+        print('\nІнтердецильна широта: ' + str(dec[-1] - dec[0]))
+        print("\nДецилі2: " + str(dec2))
+        print('\nІнтердецильна широта2: ' + str(dec2[-1] - dec2[0]))
+
+
+def main():
+
+    option = input('1 - дискретна\n2 - неперервна\n')
+
+    if option == '1':
+        discrete()
+    elif option == '2':
+        continuous()
+    else:
+        print('error')
+    
+
+main()
