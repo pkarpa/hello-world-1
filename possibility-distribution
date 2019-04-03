@@ -1,5 +1,4 @@
-Розподіл ймовірностей
+Possibility Distribution
 
-В математиці та статистиці розпо́діл ймові́рностей (який має математично описуватися функцією розподілу ймовірностей), ставить у відповідність кожному інтервалу ймовірність таким чином, що аксіоми ймовірностей виконуються. Математичною мовою, функція розподілу ймовірностей є ймовірнісною мірою, визначеною на борелівській алгебрі інтервалів.
-Розподіл імовірностей є окремим випадком загальнішого означення ймовірнісної міри, яка є функцією, що ставить у відповідність вимірним множинам з вимірного простору ймовірності за аксіомами Колмогорова.
-Згідно з означенням П. Лапласа, мірою ймовірності є дріб, чисельником якого є число сприятливих подій, а знаменником — число всіх можливих випадків.
+In mathematics and statistics, the probability distribution (which must be mathematically described by the probability distribution function), sets probability for each interval in such a way that the axioms of probabilities are fulfilled. In mathematical language, the probability distribution function is a probabilistic degree defined on the Borel algebra of intervals.
+The distribution of probabilities is a special case of a more general definition of the probabilistic measure, which is a function that corresponds to measurable sets of dimensional probability space under the Kolmogorov axioms.
